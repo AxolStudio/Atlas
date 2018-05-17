@@ -5,7 +5,7 @@ Collaborative Cartography Experiment Project
 
 This is the Open Source Code for the Atlas Project, which can be found at https://atlas.axolstudio.com/
 
-If you want to try it out on your own server, use `setup\Database.sql' to setup your database, and change `website\scripts\credentials.php.temp' to have your own credentials, then rename it (remove the '.temp').
+If you want to try it out on your own server, use `setup\Database.sql` to setup your database, and change `website\scripts\credentials.php.temp` to have your own credentials, then rename it (remove the '.temp').
 
 You will need to use [Jekyll](https://jekyllrb.com/) to build the website from `website`, and deploy `website\_site` to your webserver.
 
