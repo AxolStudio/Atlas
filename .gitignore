@@ -3,6 +3,7 @@ website/.sass-cache
 website/.jekyll-metadata
 website/.jekyll-cache
 website/scripts/credentials.php
+website/Gemfile.lock
 
 */export/
 */.vscode/
