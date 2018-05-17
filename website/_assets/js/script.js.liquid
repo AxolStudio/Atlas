@@ -1,0 +1,385 @@
+//= require bootstrap
+
+function abortAddTile() {
+  var tile  = getEditingTile();
+  if (tile != '') {
+    var t = JSON.parse(tile);
+    var data = {
+      id:t.id,
+      x:t.x,
+      y:t.y
+    };
+    $.ajax({
+      type: "POST",
+      url: "scripts/cancelNewTile.php",
+      data: data,
+      success: function(data) {
+        console.log(data);
+        closeEditor();
+      },
+      error: function(a, b, c) {
+        console.log(a, b, c);
+      }
+    });
+  } else {
+    closeEditor();
+  }
+}
+
+function closeEditor() {
+  $("#editorModal").modal('hide');
+  localStorage.removeItem("editingTile");
+}
+
+function getEditingTile() {
+  var t = localStorage.getItem("editingTile");
+  if (t != null)
+    return t;
+  else
+    return '';
+}
+
+function getUID() {
+  var u = localStorage.getItem("user");
+  if (u != null)
+  {
+    var user = JSON.parse(u);
+    return user.id;
+  }
+  return -1;
+}
+
+
+function getViewTile() {
+  var t = localStorage.getItem("viewTile");
+  if (t != null)
+  {
+    return t;
+  }
+  return '';
+}
+
+function isLoggedIn() {
+  return localStorage.getItem("user") != null;
+}
+
+function displayTile(TID) {
+  if ($("#editorModal").is(":visible") || $("#loginModal").is(":visible") || $("#userModal").is(":visible") || $("#aboutModal").is(":visible") || $("#rulesModal").is(":visible") || $("#viewModal").is(":visible") )
+    return;
+
+  if (getViewTile() != '')
+    return;
+
+  localStorage.setItem("viewTile", TID);
+
+  var user = localStorage.getItem("user");
+  if (user != null) {
+    $("#flag-button").show();
+    //  $("#star-button").show();
+  } else {
+    $("#flag-button").hide();
+    //$("#star-button").hide();
+  }
+
+  var viewer = new ViewerFunctions();
+  viewer.init(TID);
+  var data = {
+    tileID: TID
+  };
+  $.ajax({
+    type: "POST",
+    url: "scripts/getTileInfo.php",
+    data: data,
+    success: function(data) {
+      if (data.success) {
+
+        $("#view-by").html('<img class="view-icon" src="https://api.adorable.io/avatars/256/' + data.tile.username + '@atlas" /><br/>' + data.tile.username);
+        $("#view-on").html(data.tile.modified);
+        //$("#star-count").html(data.tile.stars);
+        $("#viewModal").modal('show');
+
+      } else {
+        localStorage.removeItem("viewTile");
+      }
+    },
+    error: function(a, b, c) {
+      console.log(a, b, c);
+    }
+  });
+}
+
+function showLoggedInUser()
+{
+  var user = localStorage.getItem("user");
+  if (user != null)
+  {
+    var u = JSON.parse(user);
+    $("#loggedin").html('<img class="user-icon" src="https://api.adorable.io/avatars/256/' + u.username + '@atlas" />');
+    $("#userModalAvatar").html('<img class="user-icon" src="https://api.adorable.io/avatars/64/' + u.username + '@atlas" />');
+    $("#userModalUsername").html(u.username);
+    $("#addTile").fadeIn('slow');
+
+    $("#notloggedin").fadeOut("fast", function() {
+      $("#loggedin").fadeIn('fast');
+    });
+  }
+}
+
+function getTimeZone() {
+  var timezone_offset_minutes = new Date().getTimezoneOffset();
+  timezone_offset_minutes = timezone_offset_minutes == 0 ? 0 : -timezone_offset_minutes;
+  var data = {
+    timezone_offset_minutes: timezone_offset_minutes
+  };
+  $.ajax({
+    type: "POST",
+    url: "scripts/timezone.php",
+    data: data,
+    success: function(data) {
+      //console.log(data);
+    },
+    error: function(a, b, c) {
+      console.log(a, b, c);
+    }
+  });
+}
+
+$(document).ready(function() {
+
+  getTimeZone();
+
+
+  localStorage.removeItem("editingTile");
+  localStorage.removeItem("viewTile");
+
+
+
+  scrollingMapEmbed("scrolling-map", 0,0, "909090");
+  editorEmbed("editor", 1150,800, "ffffff");
+  viewerEmbed("viewer", 784, 784, "ffffff");
+
+  $("#editorModal").on("shown.bs.modal", function(e) {
+
+    $("#editor canvas").css("width", "1160px");
+    $("#editor canvas").css("height", "800px");
+
+  });
+
+  $("#viewModal").on("shown.bs.modal", function(e) {
+
+    $("#viewer canvas").css("width", "784px");
+    $("#viewer canvas").css("height", "784px");
+
+  });
+
+  $("#flagModal").on("shown.bs.modal", function(e) {
+    $("#flag-reason").trigger("focus");
+  });
+
+  $.ajax({
+    type: "POST",
+    url: "scripts/checkloggedin.php",
+    success: function(data) {
+      if (data.success) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        showLoggedInUser();
+      } else {
+        localStorage.removeItem("user");
+        $("#loggedin").fadeOut("fast", function() {
+          $("#notloggedin").fadeIn('fast');
+        });
+      }
+    },
+    error: function(a, b, c) {
+      console.log(a, b, c);
+    }
+  });
+
+  $("a#switch-to-reg").click(function() {
+    $("#login").fadeOut("slow", function() {
+      $("#register").fadeIn("slow", function() {
+        $("#inputUsername").trigger("focus");
+      });
+    });
+  });
+
+  $("a#switch-to-login").click(function() {
+    $("#register").fadeOut("slow", function() {
+      $("#login").fadeIn("slow", function() {
+        $("#inputEmail").trigger("focus");
+      });
+    });
+  });
+
+  $("#closeview-button").click(function(e) {
+    e.preventDefault();
+    $("#viewModal").modal('hide');
+    localStorage.removeItem("viewTile");
+  });
+
+  $("#flag-button").click(function(e) {
+    e.preventDefault();
+    var tileID = localStorage.getItem("viewTile");
+    if (tileID == null)
+      return;
+    // show a form to ask user to flag this tile
+    $("#flagModal").modal('show');
+  });
+
+  $("#star-button").click(function(e) {
+    e.preventDefault();
+    //
+  });
+
+  $("#flag-submit-button").click(function(e) {
+    e.preventDefault();
+    $(".invalid-tooltip").remove();
+    $("#register input").removeClass("is-invalid");
+
+    var data = {
+      userid: getUID(),
+      tileid: getViewTile(),
+      reason: $("#flag-reason").val()
+    };
+    $.ajax({
+      type: "POST",
+      url: "scripts/flagTile.php",
+      data: data,
+      success: function(data) {
+        if (data.success) {
+          $("#flagModal").modal("hide");
+          $("#viewModal").modal('hide');
+          localStorage.removeItem("viewTile");
+        } else {
+          $.each(data.errors, function(key, value) {
+            $('#flag-' + key).after("<div class='invalid-tooltip'>" + value + "</div>");
+            $('#flag-' + key).addClass('is-invalid');
+          });
+        }
+      },
+      error: function(a, b, c) {
+        console.log(a, b, c);
+      }
+
+    });
+
+  });
+
+  $("#register-button").click(function(e) {
+    e.preventDefault();
+    $(".invalid-tooltip").remove();
+    $("#register input").removeClass("is-invalid");
+    var data = {
+      username: $('#register-username').val(),
+      email: $('#register-email').val(),
+      password: $('#register-password').val(),
+      passwordAgain: $('#register-passwordagain').val()
+    };
+    $("#register").fadeOut("slow", function() {
+      $("#logreg-wait").fadeIn("slow", function() {
+        $.ajax({
+          type: "POST",
+          url: "scripts/register.php",
+          data: data,
+          success: function(data) {
+            $("#logreg-wait").fadeOut("slow", function() {
+              if (data.success) {
+                $("#reg-success").fadeIn("slow");
+              } else {
+                $.each(data.errors, function(key, value) {
+                  $('#register-' + key).after("<div class='invalid-tooltip'>" + value + "</div>");
+                  $('#register-' + key).addClass('is-invalid');
+                });
+                $("#register").fadeIn("slow");
+              }
+            });
+          },
+          error: function(a, b, c) {
+            console.log(a, b, c);
+          }
+        });
+      });
+    });
+  });
+
+  $("#signin-button").click(function(e) {
+    e.preventDefault();
+    $(".invalid-tooltip").remove();
+    var data = {
+      email: $('#login-email').val(),
+      password: $('#login-password').val()
+    };
+    $("#login").fadeOut("slow", function() {
+      $("#logreg-wait").fadeIn("slow", function() {
+        $.ajax({
+          type: "POST",
+          url: "scripts/login.php",
+          data: data,
+          success: function(data) {
+            $("#logreg-wait").fadeOut("slow", function(){
+              if (data.success) {
+                localStorage.setItem("user", JSON.stringify(data.user));
+                showLoggedInUser();
+                $("#loginModal").modal('hide');
+              } else {
+                $.each(data.errors, function(key, value){
+                  $('#login-' + key).parent().after("<div class='invalid-tooltip'>" + value + "</div>");
+                });
+                $("#login").fadeIn("slow");
+              }
+            });
+          },
+          error: function(a, b, c) {
+            console.log(a, b, c);
+          }
+        });
+      });
+    });
+  });
+
+  $("#signout-button").click(function(e){
+    e.preventDefault();
+    $.ajax({
+      type: 'POST',
+      url: 'scripts/logout.php',
+      success: function(data) {
+        if (data.success) {
+          localStorage.removeItem("user");
+          $("#userModal").modal('hide');
+          $("#loggedin").fadeOut("fast", function() {
+            $("#notloggedin").fadeIn('fast');
+          });
+        }
+      },
+      error: function(a, b, c) {
+        console.log(a, b, c);
+      }
+    });
+  });
+
+  $("#addTile").click(function(e){
+    e.preventDefault();
+    var data = {
+      uid: getUID()
+    };
+    $.ajax({
+      type: 'POST',
+      url: 'scripts/startNewTile.php',
+      data: data,
+      success: function(data) {
+        if (data.success) {
+          // bring up the editor, and have the user edit a tile!
+
+          localStorage.setItem("editingTile", JSON.stringify(data.tile));
+          var editor = new EditorFunctions();
+          editor.init(data.tile.id);
+          $("#editorModal").modal('show');
+        }
+      },
+      error: function(a, b, c) {
+        console.log(a, b, c);
+      }
+    });
+  });
+
+});

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% asset style.css %}
+
+    <link rel="shortcut icon" href="{{ site.baseurl }}/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="{{ site.baseurl }}/favicon.ico" type="image/x-icon">
+
+    <title>{{ site.title }}</title>
+
+    <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
+
+    <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+    <meta name="keywords" content="{{ site.keywords }}">
+    <meta name="author" content="{{ site.author }}">
+
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-KwxQKNj2D0XKEW5O/Y6haRH39PE/xry8SAoLbpbCMraqlX7kUP6KHOnrlrtvuJLR" crossorigin="anonymous">
+
+    {% asset atlas-map.js %}
+    {% asset atlas-editor.js %}
+    {% asset atlas-viewer.js %}
+
+
+  </head>
+
+  <body role="document">
+
+    <!-- Navbar -->
+    <div id="logo">
+      <a href="#">
+        {% asset AtlasLogo-White-Shadow.svg %}
+      </a>
+    </div>
+
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top ">
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+        <ul class="navbar-nav ">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="modal" data-target="#aboutModal" ><i class="fas fa-question-circle fa-fw fa-2x"></i></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="modal" data-target="#rulesModal" ><i class="fas fa-book fa-fw fa-2x"></i></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal" id="notloggedin">
+              <i class="fas fa-user-circle fa-fw fa-2x"></i>
+            </a>
+            <a class="nav-link" href="#" data-toggle="modal" data-target="#userModal" id="loggedin" style="display:none;">
+
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <!-- end Navbar -->
+
+    <div id="scrolling-map">
+
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true" data-backdrop="static">
+      <div class="modal-dialog " role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true"><i class="fas fa-times"></i></span>
+            </button>
+            <div id="login">
+              <form id="form-signin">
+                <div class="text-center mb-4">
+                  <span class="mb-4"><i class="fas fa-user-circle fa-fw fa-4x"></i></span>
+                  <h1 class="h3 mb-3 font-weight-normal" id="loginModalLabel">Please sign in</h1>
+                </div>
+                <div class="form-label-group">
+                  <input type="email" id="login-email" class="form-control"  autocomplete='email' placeholder="Email address" required autofocus>
+                  <label for="login-email">Email address</label>
+                </div>
+                <div class="form-label-group">
+                  <input type="password" id="login-password" autocomplete='current-password' class="form-control" placeholder="Password" required>
+                  <label for="login-password">Password</label>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block" id="signin-button" data-role="button" data-theme="a">Sign in</button>
+                <p>Don't have an account? <a href="#register" id="switch-to-reg">Register</a>.</p>
+              </form>
+            </div>
+            <div id="register" style="display:none;">
+                <form id="form-register">
+                  <div class="text-center mb-4">
+                    <span class="mb-4"><i class="fas fa-user-circle fa-fw fa-4x"></i></span>
+                    <h1 class="h3 mb-3 font-weight-normal" id="loginModalLabel">Register a new account</h1>
+                  </div>
+                  <div class="form-label-group">
+                    <input type="text" id="register-username" autocomplete='new-username' ondragover=""class="form-control" placeholder="Desired Username" required autofocus>
+                    <label for="register-username">Desired Username</label>
+                  </div>
+                  <div class="form-label-group">
+                    <input type="email" id="register-email" autocomplete='email' class="form-control" placeholder="Email address" required>
+                    <label for="register-email">Email address</label>
+                  </div>
+                  <div class="form-label-group">
+                    <input type="password" id="register-password" autocomplete='new-password' class="form-control" placeholder="Password" required>
+                    <label for="register-password">Password</label>
+                  </div>
+                  <div class="form-label-group">
+                    <input type="password" id="register-passwordagain" autocomplete='new-password' class="form-control" placeholder="Password again" required>
+                    <label for="register-passwordagain">Password again</label>
+                  </div>
+                  <button class="btn btn-lg btn-primary btn-block" id="register-button" data-role="button" data-theme="a">Register</button>
+                  <p>Already have an account? <a href="#login" id="switch-to-login">Sign in</a>.</p>
+                </form>
+            </div>
+            <div id="logreg-wait" style="display:none;">
+              <div class="text-center mb-4">
+                <span class="mb-4"><i class="fas fa-user-circle fa-fw fa-4x"></i></span>
+                <h1 class="h3 mb-3 font-weight-normal" id="loginModalLabel">Please wait...</h1>
+                <span class="mb-4"><i class="fas fa-spinner fa-pulse"></i></span>
+              </div>
+            </div>
+            <div id="reg-success" style="display:none;">
+              <span class="mb-4"><i class="fas fa-user-circle fa-fw fa-4x"></i></span>
+              <h1 class="h3 mb-3 font-weight-normal" id="loginModalLabel">Registration successful!</h1>
+              <p>A verification email has been sent to the email address you provided. Follow the instructions in that email to proceed.</p>
+              <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end Login modal -->
+
+    <!-- User modal -->
+    <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true" data-backdrop="static">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true"><i class="fas fa-times"></i></span>
+            </button>
+
+            <div class="text-center mb-4">
+              <span class="mx-auto text-center d-block" id="userModalAvatar" style="width:80px;"></span>
+              <h1 class="h3 mb-4 font-weight-normal" id="userModalUsername">Username</h1>
+            </div>
+
+            <p>
+              I'd like to put some stats here like how many tiles they've made, how many are still 'in use', etc...
+            </p>
+
+            <button type="button" class="btn btn-warning" id="signout-button">Sign out</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End User modal -->
+
+    <!-- About Modal -->
+    <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true" data-backdrop="static">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="aboutModalLabel"><i class="fas fa-question-circle fa-fw fa-lg"></i> About</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true"><i class="fas fa-times"></i></span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="about-logo" class="mx-auto">
+              {% asset AtlasLogo.svg %}
+            </div>
+            <p class="lead"><strong>Atlas</strong> is a collaborative cartography experiment.</p>
+            <p>Registered users can come together and add tiles to the shared map, growing and expanding the contents of the world, and zoom in on individual tiles to see who made it, and when.</p>
+            <p>Anyone is welcome to <i class="fas fa-user-circle fa-fw "></i> register and begin contributing to the world map. Just make sure you adhere to the <a href="#" data-toggle="modal" data-target="#rulesModal" ><i class="fas fa-book fa-fw"></i> rules</a>.</p>
+            <p><strong><i class="fas fa-globe"></i> Atlas</strong> was built by <a href="https://www.tims-world.com/">Tim Hely</a> for <a href="https://axolstudio.com/">Axol Studio, LLC</a> and built using <a href="https://haxeflixel.com/">{% asset haxeflixel.svg style="width:1rem;height:1rem;" %} HaxeFlixel</a></p>
+            <p>Future additions include:
+              <ul>
+                <li>Ability to change existing tiles (add to or tweak what someone else has done)</li>
+                <li>Procedural decay/evolution of tiles?</li>
+                <li>Ability to star well-designed tiles</li>
+                <li>More terrain options</li>
+                <li>Better painting tools</li>
+                <li>Alterate maps</li>
+                <li>...and more?</li>
+              </ul>
+            </p>
+            <p>Found a bug? Send an email to <a href="mailto:atlas.bugs@axolstudio.com">atlas.bugs@axolstudio.com</a></p>
+          </div>
+          <div class="modal-footer">
+            <blockquote class="blockquote text-right">
+              <p class="mb-0">"Geography is just physics slowed down, with a couple of trees stuck in it."</p>
+              <footer class="blockquote-footer">Sir Terry Pratchett</footer>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end About Modal -->
+
+    <!-- Editor Modal -->
+    <div class="modal fade" id="editorModal" tabindex="-1" role="dialog" aria-labelledby="editorModalLabel" aria-hidden="true" data-backdrop="static">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div id="editor">
+
+            </div>
+            <div class="text-center">Make sure to follow the <a href="#" data-toggle="modal" data-target="#rulesModal">rules</a>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end Editor Modal -->
+
+
+
+    <!-- View Modal -->
+    <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aira-hidden="true" data-backdrop="static">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="container">
+              <div class="row">
+                <div class="col">
+                  <div id="viewer">
+
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="container">
+                    <div class="row">
+                      <div class="col text-muted">
+                        <h5>Cartography by:</h5>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col text-center h3" id="view-by">
+                        Username/avatar
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col text-muted">
+                        <h5>Added on:</h5>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col text-center h3" id="view-on">
+                        MM/DD/YYYY
+                      </div>
+                    </div>
+                    <!-- <div class="row">
+                      <div class="col text-center h3" id="view-stars">
+                        <i class="fas fa-star"></i> <span id="star-count">0</span>
+                      </div>
+                    </div> -->
+                  </div>
+                  <div class="d-flex justify-content-around" id="view-buttons">
+                    <button type="button" class="btn btn-danger" id="flag-button">{% asset flag.png %}</button>
+                    <!-- <button type="button" class="btn btn-warning" id="star-button">{% asset star.png %}</button> -->
+                    <button type="button" class="btn btn-primary" id="closeview-button">{% asset cross.png %}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- end View Modal -->
+
+    <!-- Flag Modal -->
+    <div class="modal fade" id="flagModal" tabindex="-1" role="dialog" aria-labelledby="flagModalLabel" aira-hidden="true" data-backdrop="static">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="flagModalLabel"><i class="fas fa-flag fa-fw fa-lg"></i> Flag a Tile</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true"><i class="fas fa-times"></i></span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="form-flag">
+              <lead class="text-warning">Warning: only flag tiles that break the <a href="#" data-toggle="modal" data-target="#rulesModal">rules</a>.</lead>
+              <div class="form-group">
+                <label for="flag-reason">Explain why you wish to flag this tile</label>
+                <textarea class="form-control" id="flag-reason" rows="3" required></textarea>
+                <div class="invalid-feedback">
+                  You must provide a reason.
+                </div>
+              </div>
+              <button class="btn btn-lg btn-primary btn-block" id="flag-submit-button" data-role="button" data-theme="a">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end Flag Modal -->
+
+    <!-- Rules Modal -->
+    <div class="modal fade" id="rulesModal" tabindex="-1" role="dialog" aria-labelledby="rulesModalLabel" aira-hidden="true" data-backdrop="static">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="rulesModalLabel"><i class="fas fa-book fa-fw fa-lg"></i> Rules</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true"><i class="fas fa-times"></i></span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>The principal behind this project is that we want everyone to collectively work together to make an interesting, realistic map. We ask that all users follow the rules to ensure this happens, and so that everyone can enjoy the outcome of this experiment as it evolves.</p>
+            <p>Tiles are assigned psuedo-randomly. When you choose to add a tile, you'll be assigned a new, empty space based on criteria built into the system. Please try to work with what you've been given - if you don't like your spot, <strong>do not</strong> abort editing your tile just to get a new one - it goes against the spirit of the experiment.</p>
+            <p>Try to make your tiles make 'natural' sense. Try to imagine the way your tiles' landscape would behave.</p>
+            <div class="d-flex flex-row justify-content-around">
+              <figure class="figure">
+                {% asset rules_02_bad.png class="figure-img img-fluid rounded"  %}
+                <figcaption class="figure-caption text-center"><i class="fas fa-times" style="color:red;"></i>Incorrect</figurecaption>
+              </figure>
+              <figure class="figure">
+                {% asset rules_02_good.png class="figure-img img-fluid rounded"  %}
+                <figcaption class="figure-caption text-center"><i class="fas fa-check" style="color:green;"></i> Correct</figurecaption>
+              </figure>
+              <figure class="figure">
+                {% asset rules_02_good_2.png class="figure-img img-fluid rounded"  %}
+                <figcaption class="figure-caption text-center"><i class="fas fa-check" style="color:green;"></i> Correct</figurecaption>
+              </figure>
+            </div>
+            <p>Always base your tile off of what any existing neighbors have given you to work with. If a neighbor has a river that connects with one of your edges, continue the river into your tile. Avoid abrupt changes or unmatching terrain.</p>
+            <div class="d-flex flex-row justify-content-around">
+              <figure class="figure">
+                {% asset rules_00_good.png  class="figure-img img-fluid rounded"  %}
+                <figcaption class="figure-caption text-center"><i class="fas fa-check" style="color:green;"></i> Correct</figurecaption>
+              </figure>
+              <figure class="figure">
+                {% asset rules_00_bad.png  class="figure-img img-fluid rounded"  %}
+                <figcaption class="figure-caption text-center"><i class="fas fa-times" style="color:red;"></i>Incorrect</figurecaption>
+              </figure>
+            </div>
+            <p>Try to make sure there is something unique and interesting about your tiles. It can be interesting to have huge areas of grass or ocean, but, these should be rare - dot some trees, or small islands in to break up too much monotony. Tiles of solid color with no details are not ideal.</p>
+            <div class="d-flex flex-row justify-content-around">
+              <figure class="figure">
+                {% asset rules_01_bad.png class="figure-img img-fluid rounded"  %}
+                <figcaption class="figure-caption text-center"><i class="fas fa-times" style="color:red;"></i>Incorrect</figurecaption>
+              </figure>
+              <figure class="figure">
+                {% asset rules_01_good.png  class="figure-img img-fluid rounded"  %}
+                <figcaption class="figure-caption text-center"><i class="fas fa-check" style="color:green;"></i> Correct</figurecaption>
+              </figure>
+            </div>
+            <p>Never draw letters, numbers, shapes, or symbols into your tiles.</p>
+            <div class="d-flex flex-row justify-content-around">
+              <figure class="figure">
+                {% asset rules_03_bad.png class="figure-img img-fluid rounded"  %}
+                <figcaption class="figure-caption text-center"><i class="fas fa-times" style="color:red;"></i>Incorrect</figurecaption>
+              </figure>
+              <figure class="figure">
+                {% asset rules_03_bad_2.png  class="figure-img img-fluid rounded"  %}
+                <figcaption class="figure-caption text-center"><i class="fas fa-times" style="color:red;"></i>Incorrect</figurecaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end Rules Modal -->
+
+    <a href="#add" id="addTile"  style="display:none;" >
+      <i class="far fa-plus-square fa-fw fa-4x"></i>
+    </a>
+
+    <footer class="footer">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col">
+            build 0.0.2b
+          </div>
+          <div class="col text-right">
+            &copy; 2018 <a href="http://axolstudio.com">Axol Studio, LLC {% asset axol-logo-tiny-circle | style="height:2rem; width:2rem; margin-left:1rem;" %}</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    {% asset script.js %}
+
+
+  </body>
+
+</html>

@@ -1,0 +1,9 @@
+website/_site
+website/.sass-cache
+website/.jekyll-metadata
+website/.jekyll-cache
+website/scripts/credentials.php
+
+*/export/
+*/.vscode/
+

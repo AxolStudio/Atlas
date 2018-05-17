@@ -1,0 +1,27 @@
+title: Atlas
+email: tim@axolstudio.com
+description: >- # this means to ignore newlines until "baseurl:"
+  Build a collaborative world map!
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://atlas.axolstudio.com" # the base hostname & protocol for your site, e.g. http://example.com
+author: Axol Studio, LLC
+destination: _site
+locale: en_US
+
+# Build settings
+markdown: kramdown
+permalink: pretty
+
+assets:
+  cdn:
+    baseurl: false
+  sources:
+    - _assets/images
+    - _assets/stylesheets
+    - _assets/js
+
+plugins:
+  - bootstrap
+  - jekyll-sitemap
+
+exclude: [.gitignore, Gemfile, Gemfile.lock, README.md, Rakefile, build, deploy.sh]

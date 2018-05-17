@@ -1,0 +1,23 @@
+---
+layout: galleries
+title: Galleries
+
+---
+
+<section id="galleries">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="posts-header">
+          <h1>{{ page.title }}</h1>
+          <p>This is a list of different image galleries from our games.</p>
+        </div>
+        <ul>
+          {% for gallery in site.galleries %}
+            <li><a href="/galleries/{{ gallery.name }}">{{ gallery.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

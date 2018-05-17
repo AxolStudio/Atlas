@@ -1,0 +1,38 @@
+//= require bootstrap
+
+$(document).ready(function() {
+
+  $("#verify-button").click(function(e) {
+    e.preventDefault();
+    $(".invalid-tooltip").remove();
+    var data = {
+      code: $('#verify-code').val()
+    };
+    $("#form-verify").fadeOut("slow", function() {
+      $("#wait").fadeIn("slow", function() {
+        $.ajax({
+          type: "POST",
+          url: "/scripts/verify.php",
+          data: data,
+          success: function(data) {
+            $("#wait").fadeOut("slow", function(){
+              if (data.success) {
+                $("#verify-success").fadeIn("slow");
+              } else {
+                $.each(data.errors, function(key, value) {
+                  $('#verify-' + key).after("<div class='invalid-tooltip'>" + value + "</div>");
+                  $('#verify-' + key).addClass('is-invalid');
+                });
+                $("#form-verify").fadeIn("slow");
+              }
+            });
+          },
+          error: function(a, b, c) {
+            console.log(a, b, c);
+          }
+        });
+      });
+    });
+  });
+
+});

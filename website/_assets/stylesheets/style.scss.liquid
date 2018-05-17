@@ -1,0 +1,169 @@
+@import "bootstrap";
+
+:root {
+  --input-padding-x: .75rem;
+  --input-padding-y: .75rem;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
+body.verify {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.navbar .user-icon {
+  width: 2em;
+  height: 2em;
+  border-width: thin;
+}
+.user-icon {
+  border-radius:50%;
+  border-style: solid;
+  border-color: #212529;
+}
+
+#userModalAvatar .user-icon {
+  width:4em;
+  height:4em;
+  border-width: medium;
+}
+
+#form-signin, #form-register, #form-verify, #wait, #verify-success {
+  width: 100%;
+  max-width: 420px;
+  padding: 15px;
+  margin: auto;
+
+  .form-label-group {
+    position: relative;
+    margin-bottom: 1rem;
+    > input, > label {
+      padding: var(--input-padding-y) var(--input-padding-x);
+    }
+    > label {
+      position: absolute;
+      top:0;
+      left:0;
+      display: block;
+      width: 100%;
+      margin-bottom: 0;
+      line-height: 1.5;
+      color: #495057;
+      border: 1px solid transparent;
+      cursor:text;
+    }
+    input::placeholder {
+      color: transparent;
+    }
+    input:not(:placeholder-shown) ~ label {
+      padding-top: calc(var(--input-padding-y) / 5);
+      padding-bottom: calc(var(--input-padding-y) / 5);
+      font-size: 10px;
+      color: #999;
+    }
+  }
+  button {
+    margin-bottom:1rem;
+  }
+
+}
+
+#addTile {
+  display:block;
+  position: absolute;
+  bottom:6em;
+  right:2em;
+  z-index: 100;
+  color: #ffffff;
+  text-shadow: 0px 0px 4px #212529;
+}
+
+#scrolling-map {
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    overflow:hidden;
+}
+
+#editorModal .modal-xl {
+  max-width: 1200px;
+  width:1200px;
+}
+
+#editor {
+  margin:0 auto;
+  width:1150px;
+  height:800px;
+}
+
+
+#viewModal .modal-xl {
+  max-width: 1200px;
+  width:1200px;
+}
+
+#viewer {
+  margin:0 auto;
+  width:784px;
+  height:784px;
+}
+
+.footer {
+  position: absolute;
+  bottom:0;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  background-color: #343a40;
+  color: #f8f9fa;
+  border-top:1px solid black;
+}
+
+#view-buttons {
+  position: absolute;
+  bottom:0;
+  margin-bottom:2rem;
+  width:100%;
+}
+
+.view-icon {
+  width:5rem;
+  height:5rem;
+  border-width:.2rem;
+  border-radius:50%;
+  border-style: solid;
+  border-color: #212529;
+}
+
+#logo {
+  position: absolute;
+  z-index: 1040;
+  left:2rem;
+  top:1rem;
+  img {
+    width: 14rem;
+    height: 14rem;
+  }
+}
+
+
+footer a, .navbar-dark .navbar-nav .nav-link {
+  color: white;
+  &:hover, &:focus {
+    color: #ffffc8;
+  }
+}
+
+#about-logo {
+  width: 15rem;
+  height: 15rem;
+}

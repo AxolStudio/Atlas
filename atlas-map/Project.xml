@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	<app title="atlas-map" file="atlas-map" main="Main" version="b0.2" company="Axol Studio, LLC" />
+	<app preloader="Preloader" />
+	<window width="0" height="0" fps="60" background="#909090" hardware="true" vsync="false" />
+	<window if="html5" resizable="false" />
+	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" />
+	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" />
+	<set name="BUILD_DIR" value="export" />
+	<classpath name="source" />
+	<assets path="assets/images" include="*.png" type="image" />
+	<haxelib name="flixel" />
+	<haxedef name="FLX_NO_MOUSE" if="mobile" />
+	<haxedef name="FLX_NO_KEYBOARD" if="mobile" />
+	<haxedef name="FLX_NO_TOUCH" if="desktop" />
+	<haxedef name="FLX_NO_GAMEPAD" />
+	<haxedef name="FLX_NO_SOUND_TRAY" />
+	<haxedef name="FLX_NO_SOUND_SYSTEM" />
+	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
+	<haxedef name="FLX_NO_DEBUG"  />
+	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
+</project>

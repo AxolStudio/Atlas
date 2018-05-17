@@ -1,0 +1,11 @@
+require 'bundler'
+
+task :default => :serve
+
+task :serve do
+  sh 'jekyll serve'
+end
+
+task :build do
+  sh 'jekyll build'
+end
