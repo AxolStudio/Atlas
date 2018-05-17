@@ -5,8 +5,10 @@ import flixel.FlxObject;
 import flixel.math.FlxAngle;
 import flixel.group.FlxSpriteGroup;
 import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.util.FlxSpriteUtil;
 
-class TileGroup extends FlxTypedSpriteGroup<MapTile>
+class TileGroup extends FlxSpriteGroup
 {
 
     public var ScreenW:Int=0;
@@ -23,10 +25,15 @@ class TileGroup extends FlxTypedSpriteGroup<MapTile>
     public var maxY:Int=0;
 
     public var tiles:Map<String, MapTile>;
+    public var keys:Map<String,MapKey>;
 
     public var data:Array<Array<Int>>;
 
-    
+    public var groupTiles:FlxTypedSpriteGroup<MapTile>;
+    public var groupKeysH:FlxTypedSpriteGroup<MapKey>;
+    public var groupKeysV:FlxTypedSpriteGroup<MapKey>;
+
+    public var corners:Array<FlxSprite>;
 
 
     public function new()
@@ -34,12 +41,38 @@ class TileGroup extends FlxTypedSpriteGroup<MapTile>
         super();
         
         tiles = new Map<String, MapTile>();
+        keys = new Map<String, MapKey>();
+
+        groupTiles = new FlxTypedSpriteGroup<MapTile>();
+        groupKeysH = new FlxTypedSpriteGroup<MapKey>();
+        groupKeysV = new FlxTypedSpriteGroup<MapKey>();
 
         x = (FlxG.width/2)-32;
         y = (FlxG.height/2)-32;
 
         maxVelocity.set(500,500);
         drag.set(2000,2000);
+
+        add(groupTiles);
+        add(groupKeysV);
+        add(groupKeysH);
+        
+        corners = [];
+
+        var c:FlxSprite;
+        for (i in 0...4)
+        {
+            c = new FlxSprite();
+            c.makeGraphic(30,30,0xFF000000, false, "corner"+Std.string(i));
+            corners.push(c);
+            add(c);
+        }
+
+        FlxSpriteUtil.drawRect(corners[0], 0,0,27,27,0xff666666);
+        FlxSpriteUtil.drawRect(corners[1], 0,3,27,27,0xff666666);
+        FlxSpriteUtil.drawRect(corners[2], 3,0,27,27,0xff666666);
+        FlxSpriteUtil.drawRect(corners[3], 3,3,27,27,0xff666666);
+
 
     }
 
@@ -59,7 +92,20 @@ class TileGroup extends FlxTypedSpriteGroup<MapTile>
     {
         movement(elapsed);
         checkScreenPos();
+        updateCorners();
         super.update(elapsed);
+    }
+
+    private function updateCorners():Void
+    {
+        corners[0].x = 0;
+        corners[0].y = 0;
+        corners[1].x = 0;
+        corners[1].y = FlxG.height-30;
+        corners[2].x = FlxG.width-30;
+        corners[2].y = 0;
+        corners[3].x = FlxG.width-30;
+        corners[3].y = FlxG.height-30;
     }
 
     private function movement(elapsed:Float):Void
@@ -135,6 +181,7 @@ class TileGroup extends FlxTypedSpriteGroup<MapTile>
         var t:MapTile;
         var tileID:Int = -1;
         var key:String;
+        var k:MapKey;
         
         while (tX <= screenEndX)
         {
@@ -160,7 +207,7 @@ class TileGroup extends FlxTypedSpriteGroup<MapTile>
                     t.y = tY * 65;
                     tiles.set(key, t);
                     tAdded = true;
-                    add(t);
+                    groupTiles.add(t);
                 }
                 else
                 {
@@ -177,6 +224,31 @@ class TileGroup extends FlxTypedSpriteGroup<MapTile>
                     
                         Connection.loadTile(tileID, t);
                     }  
+                }
+
+                if (!keys.exists(Std.string(tX)+"-top"))
+                {
+                    k= new MapKey(tX, Std.int(tX*65), 0, MapKey.ORIENT_TOP, this);
+                    keys.set(Std.string(tX)+"-top", k);
+                    groupKeysH.add(k);
+                }
+                if (!keys.exists(Std.string(tX)+"-bottom"))
+                {
+                    k= new MapKey(tX, Std.int(tX*65), 0, MapKey.ORIENT_BOTTOM, this);
+                    keys.set(Std.string(tX)+"-bottom", k);
+                    groupKeysH.add(k);
+                }
+                if (!keys.exists(Std.string(tY)+"-left"))
+                {
+                    k= new MapKey(tY, 0, Std.int(tY*65), MapKey.ORIENT_LEFT, this);
+                    keys.set(Std.string(tY)+"-left", k);
+                    groupKeysV.add(k);
+                }
+                if (!keys.exists(Std.string(tY)+"-right"))
+                {
+                    k= new MapKey(tY,  0, Std.int(tY*65), MapKey.ORIENT_RIGHT, this);
+                    keys.set(Std.string(tY)+"-right", k);
+                    groupKeysV.add(k);
                 }
 
                 tY++;

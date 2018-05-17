@@ -16,6 +16,7 @@ class PlayState extends FlxState
 	private var startDrag:Bool = false;
 	private var dragStartPos:FlxPoint;
 	private var clickTime:Float = 0;
+	private var scale:FlxSprite;
 
 	override public function create():Void
 	{
@@ -34,10 +35,9 @@ class PlayState extends FlxState
 
 		new FlxTimer().start(1, updateMap, 0);
 
-		var scale:FlxSprite = new FlxSprite();
+		scale = new FlxSprite();
 		scale.loadGraphic(AssetPaths.scale__png);
-		scale.x = 20;
-		scale.y = FlxG.height - 80 - scale.height;
+		
 		scale.scrollFactor.set();
 		add(scale);
 		
@@ -87,6 +87,9 @@ class PlayState extends FlxState
 			startDrag = false;
 			clickTime = 0;
 		}
+
+		scale.x = 40;
+		scale.y = FlxG.height - 40 - scale.height;
 
 		super.update(elapsed);
 		
