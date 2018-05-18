@@ -68,7 +68,7 @@ ApplicationMain.init = function() {
 	}
 };
 ApplicationMain.main = function() {
-	ApplicationMain.config = { build : "30", company : "Axol Studio, LLC", file : "atlas-viewer", fps : 60, name : "atlas-viewer", orientation : "", packageName : "com.example.myapp", version : "b0.1", windows : [{ antialiasing : 0, background : 16777215, borderless : false, depthBuffer : false, display : 0, fullscreen : false, hardware : false, height : 784, parameters : "{}", resizable : false, stencilBuffer : true, title : "atlas-viewer", vsync : false, width : 784, x : null, y : null}]};
+	ApplicationMain.config = { build : "31", company : "Axol Studio, LLC", file : "atlas-viewer", fps : 60, name : "atlas-viewer", orientation : "", packageName : "com.example.myapp", version : "b0.1", windows : [{ antialiasing : 0, background : 16777215, borderless : false, depthBuffer : false, display : 0, fullscreen : false, hardware : false, height : 784, parameters : "{}", resizable : false, stencilBuffer : true, title : "atlas-viewer", vsync : false, width : 784, x : null, y : null}]};
 };
 ApplicationMain.start = function() {
 	var hasMain = false;
@@ -2042,7 +2042,7 @@ $hxClasses["Connection"] = Connection;
 Connection.__name__ = ["Connection"];
 Connection.state = null;
 Connection.getNeighbors = function(TileID) {
-	var h = new haxe_Http("http://atlas.axolstudio.com/scripts/" + "getTileNeighbors.php");
+	var h = new haxe_Http("https://atlas.axolstudio.com/scripts/" + "getTileNeighbors.php");
 	h.onError = Connection.onError;
 	h.onStatus = Connection.onStatus;
 	h.onData = Connection.onGetNeighbors;
@@ -2077,7 +2077,7 @@ Connection.onGetNeighbors = function(msg) {
 	}
 };
 Connection.loadTile = function(TileId,Receivers) {
-	var h = new haxe_Http("http://atlas.axolstudio.com/scripts/" + "getTileImage.php");
+	var h = new haxe_Http("https://atlas.axolstudio.com/scripts/" + "getTileImage.php");
 	h.onError = Connection.onError;
 	h.onStatus = Connection.onStatus;
 	var a2 = Receivers;
@@ -31789,35 +31789,35 @@ lime__$backend_html5_HTML5Application.prototype = {
 		window.addEventListener("blur",$bind(this,this.handleWindowEvent),false);
 		window.addEventListener("resize",$bind(this,this.handleWindowEvent),false);
 		window.addEventListener("beforeunload",$bind(this,this.handleWindowEvent),false);
-		
+
 			if (!CanvasRenderingContext2D.prototype.isPointInStroke) {
 				CanvasRenderingContext2D.prototype.isPointInStroke = function (path, x, y) {
 					return false;
 				};
 			}
-			
+
 			var lastTime = 0;
 			var vendors = ['ms', 'moz', 'webkit', 'o'];
 			for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
 				window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
 				window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
 			}
-			
+
 			if (!window.requestAnimationFrame)
 				window.requestAnimationFrame = function(callback, element) {
 					var currTime = new Date().getTime();
 					var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-					var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+					var id = window.setTimeout(function() { callback(currTime + timeToCall); },
 					  timeToCall);
 					lastTime = currTime + timeToCall;
 					return id;
 				};
-			
+
 			if (!window.cancelAnimationFrame)
 				window.cancelAnimationFrame = function(id) {
 					clearTimeout(id);
 				};
-			
+
 			window.requestAnimFrame = window.requestAnimationFrame;
 		;
 		this.lastUpdate = new Date().getTime();
@@ -48856,7 +48856,7 @@ var openfl__$internal_renderer_dom_DOMRenderer = function(width,height,element) 
 		  var styles = window.getComputedStyle(document.documentElement, ''),
 			pre = (Array.prototype.slice
 			  .call(styles)
-			  .join('') 
+			  .join('')
 			  .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
 			)[1],
 			dom = ('WebKit|Moz|MS|O').match(new RegExp('(' + pre + ')', 'i'))[1];
@@ -67344,8 +67344,7 @@ AssetPaths.green_button_wide__png = "assets/images/green_button_wide.png";
 AssetPaths.grid__png = "assets/images/grid.png";
 AssetPaths.red_button__png = "assets/images/red_button.png";
 AssetPaths.red_button_wide__png = "assets/images/red_button_wide.png";
-Connection.BASE_URL = "http://atlas.axolstudio.com/scripts/";
-Connection.TILE_URL = "http://atlas.axolstudio.com/tiles/";
+Connection.BASE_URL = "https://atlas.axolstudio.com/scripts/";
 flixel_system_FlxBasePreloader.LOCAL = "localhost";
 Xml.Element = 0;
 Xml.PCData = 1;

@@ -1,5 +1,6 @@
 package;
 
+import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.FlxG;
 import flixel.tile.FlxTileblock;
@@ -16,7 +17,6 @@ import flixel.addons.display.FlxTiledSprite;
 
 class PlayState extends FlxState
 {
-
 	public static inline var TOOL_SMALL:Int = 0;
 	public static inline var TOOL_LARGE:Int = 1;
 	public static inline var TOOL_FILL:Int = 2;
@@ -37,13 +37,11 @@ class PlayState extends FlxState
 	public var TileID:Int = -1;
 	public var TileX:Int = -1;
 	public var TileY:Int = -1;
-
 	public var neighbors:Array<FlxSprite>;
 	public var neighBack:FlxSprite;
-
 	public var bigNeighbors:Array<FlxSprite>;
-	//public var frame:FlxSprite;
-	
+	public var tileLocation:FlxText;
+
 	override public function create():Void
 	{
 		Connection.state = this;
@@ -56,19 +54,19 @@ class PlayState extends FlxState
 		initNeighbors();
 
 
-		smallButton = new ToolButton(Std.int(drawMap.x + drawMap.width + 72), Std.int(272), AssetPaths.toolPencil_sm__png, clickSmall);
+		smallButton = new ToolButton(Std.int(drawMap.x + drawMap.width + 72), 342, AssetPaths.toolPencil_sm__png, clickSmall);
 		add(smallButton);
-		largeButton = new ToolButton(Std.int(drawMap.x + drawMap.width + 134), Std.int(272), AssetPaths.toolPencil__png, clickLarge);
+		largeButton = new ToolButton(Std.int(drawMap.x + drawMap.width + 134), 342, AssetPaths.toolPencil__png, clickLarge);
 		add(largeButton);
-		fillButton = new ToolButton(Std.int(drawMap.x + drawMap.width + 196), Std.int(272), AssetPaths.toolFill__png, clickFill);
+		fillButton = new ToolButton(Std.int(drawMap.x + drawMap.width + 196), 342, AssetPaths.toolFill__png, clickFill);
 		add(fillButton);
-		eraseButton = new ToolButton(Std.int(drawMap.x + drawMap.width + 258), Std.int(272), AssetPaths.toolEraser__png, clickErase);
+		eraseButton = new ToolButton(Std.int(drawMap.x + drawMap.width + 258), 342, AssetPaths.toolEraser__png, clickErase);
 		add(eraseButton);
 
 		palette = new FlxTilemap();
 		palette.loadMapFromArray([1,2,3,4,5,6,7,8,9],3,3,AssetPaths.big_tiles__png,80,80);
 		palette.x = drawMap.x + drawMap.width + 72;
-		palette.y = 364;
+		palette.y = 434;
 		
 		var pFrame:FlxSprite = new FlxSprite(palette.x -2 ,palette.y -2);
 		pFrame.makeGraphic(Std.int(palette.width + 4), Std.int(palette.height + 4), 0xff909090);
@@ -89,10 +87,10 @@ class PlayState extends FlxState
 
 		smallButton.locked = true;
 
-		abortButton = new ToolButton(Std.int(drawMap.x + drawMap.width + 72), Std.int(drawMap.y + drawMap.height - 72), AssetPaths.trashcanOpen__png, clickAbort, ToolButton.BTN_RED);
+		abortButton = new ToolButton(Std.int(drawMap.x + drawMap.width + 72), Std.int(drawMap.y + drawMap.height), AssetPaths.trashcanOpen__png, clickAbort, ToolButton.BTN_RED);
 		add(abortButton);
 
-		doneButton = new ToolButton(Std.int(drawMap.x + drawMap.width + 258), Std.int(drawMap.y + drawMap.height - 72), AssetPaths.save__png, clickDone, ToolButton.BTN_GREEN);
+		doneButton = new ToolButton(Std.int(drawMap.x + drawMap.width + 258), Std.int(drawMap.y + drawMap.height), AssetPaths.save__png, clickDone, ToolButton.BTN_GREEN);
 		add(doneButton);
 
 		var key:FlxSprite = new FlxSprite();
@@ -100,6 +98,13 @@ class PlayState extends FlxState
 		key.x = drawMap.x - 8;
 		key.y = drawMap.y + drawMap.height + 20;
 		add(key);
+		
+		tileLocation = new FlxText(Std.int(pFrame.x), Std.int(drawMap.y - 50), pFrame.width, "0, 0", 22, false);
+		tileLocation.color = 0x343a40;
+        tileLocation.systemFont = "Segoe UI";
+		tileLocation.bold = true;
+		tileLocation.alignment = FlxTextAlign.CENTER;
+		add(tileLocation);
 
 		super.create();
 	}
@@ -136,51 +141,51 @@ class PlayState extends FlxState
 	private function initNeighbors():Void
 	{
 		neighbors = [];
-		neighBack = new FlxSprite(Std.int(drawMap.x + drawMap.width + 70), 38);
+		neighBack = new FlxSprite(Std.int(drawMap.x + drawMap.width + 90), 98);
 		neighBack.makeGraphic(198, 198, 0xff909090);
 		
 
-		var s:FlxSprite = new FlxSprite(Std.int(drawMap.x + drawMap.width + 72), 40);
+		var s:FlxSprite = new FlxSprite(Std.int(drawMap.x + drawMap.width + 92), 100);
 		s.makeGraphic(64,64,0xff303030, true);
 		neighbors.push(s);
 		
 
-		s = new FlxSprite(Std.int(drawMap.x + drawMap.width + 72 + 65), 40);
+		s = new FlxSprite(Std.int(drawMap.x + drawMap.width + 92 + 65), 100);
 		s.makeGraphic(64,64,0xff303030, true);
 		neighbors.push(s);
 		
 
-		s = new FlxSprite(Std.int(drawMap.x + drawMap.width + 72 + 130), 40);
+		s = new FlxSprite(Std.int(drawMap.x + drawMap.width + 92 + 130), 100);
 		s.makeGraphic(64,64,0xff303030, true);
 		neighbors.push(s);
 		
 		
-		s = new FlxSprite(Std.int(drawMap.x + drawMap.width + 72), 105);
-		s.makeGraphic(64,64,0xff303030, true);
-		neighbors.push(s);
-		
-
-		s = new FlxSprite(Std.int(drawMap.x + drawMap.width + 72 + 65), 105);
+		s = new FlxSprite(Std.int(drawMap.x + drawMap.width + 92), 165);
 		s.makeGraphic(64,64,0xff303030, true);
 		neighbors.push(s);
 		
 
-		s = new FlxSprite(Std.int(drawMap.x + drawMap.width + 72 + 130), 105);
+		s = new FlxSprite(Std.int(drawMap.x + drawMap.width + 92 + 65), 165);
 		s.makeGraphic(64,64,0xff303030, true);
 		neighbors.push(s);
 		
 
-		s = new FlxSprite(Std.int(drawMap.x + drawMap.width +72 ), 170);
+		s = new FlxSprite(Std.int(drawMap.x + drawMap.width + 92 + 130), 165);
 		s.makeGraphic(64,64,0xff303030, true);
 		neighbors.push(s);
 		
 
-		s = new FlxSprite(Std.int(drawMap.x + drawMap.width + 72 + 65), 170);
+		s = new FlxSprite(Std.int(drawMap.x + drawMap.width + 92 ), 230);
 		s.makeGraphic(64,64,0xff303030, true);
 		neighbors.push(s);
 		
 
-		s = new FlxSprite(Std.int(drawMap.x + drawMap.width + 72 + 130), 170);
+		s = new FlxSprite(Std.int(drawMap.x + drawMap.width + 92 + 65), 230);
+		s.makeGraphic(64,64,0xff303030, true);
+		neighbors.push(s);
+		
+
+		s = new FlxSprite(Std.int(drawMap.x + drawMap.width + 92 + 130), 230);
 		s.makeGraphic(64,64,0xff303030, true);
 		neighbors.push(s);
 		
@@ -371,9 +376,12 @@ class PlayState extends FlxState
 		selectedTool = TOOL_ERASE;
 	}
 
-	public function init(TID:Int):Void
+	public function init(TID:Int, X:Int, Y:Int):Void
 	{
 		TileID = TID;
+		TileX = X;
+		TileY = Y;
+		tileLocation.text = Std.string(TileX) + ", " + Std.string(TileY);
 		Connection.getNeighbors(TileID);
 		for (x in 0...drawMap.widthInTiles)
 		{
@@ -384,6 +392,7 @@ class PlayState extends FlxState
 		}
 		clickSmall();
 		selectPalette(1);
+		
 	}
 
 	private function clickAbort():Void
@@ -412,7 +421,7 @@ class PlayState extends FlxState
 				if (saveTile())
 				{
 					 var base:Dynamic = window;
-					 base.closeEditor();
+					 base.closeEditor(TileX, TileY);
 				}
 			} 
 			else 
@@ -592,8 +601,8 @@ class EditorFunctions
     function new() {
         // nothing...
     }
-    public function init(TileID:Int):Void
+    public function init(TileID:Int, X:Int, Y:Int):Void
     {
-        cast(FlxG.state, PlayState).init(TileID);
+        cast(FlxG.state, PlayState).init(TileID, X, Y);
     }
 }

@@ -2,9 +2,9 @@
 
   require_once("db.php");
 
-  $userid = isset($_POST['uid']) ? trim($_POST['uid']) : "";
+  $userid = isset($_POST['uid']) ? trim($_POST['uid']) : -1;
 
-  if ($userid === "") {
+  if ($userid <= 0) {
     $response["errors"]["userid"] = "User must be logged in";
   } else {
 

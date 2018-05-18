@@ -12,9 +12,7 @@ class Connection
 {
 
     public static var state:PlayState;
-    public static inline var BASE_URL:String = "http://atlas.axolstudio.com/scripts/";
-    public static inline var TILE_URL:String = "http://atlas.axolstudio.com/tiles/";
-
+    public static inline var BASE_URL:String = "https://atlas.axolstudio.com/scripts/";
 
     static public function saveTile(TileID:Int, B:Array<Int>):Void
     {
@@ -89,10 +87,6 @@ class Connection
             }
         }
     }
-
-
-
-   
 
     static public function loadTile(TileId:Int, Receivers:Array<FlxSprite>):Void
     {

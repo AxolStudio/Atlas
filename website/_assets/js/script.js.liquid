@@ -26,9 +26,11 @@ function abortAddTile() {
   }
 }
 
-function closeEditor() {
+function closeEditor(TileX, TileY) {
   $("#editorModal").modal('hide');
   localStorage.removeItem("editingTile");
+  var map = new MapFunctions();
+  map.zoomToTile(TileX, TileY);
 }
 
 function getEditingTile() {
@@ -372,7 +374,7 @@ $(document).ready(function() {
 
           localStorage.setItem("editingTile", JSON.stringify(data.tile));
           var editor = new EditorFunctions();
-          editor.init(data.tile.id);
+          editor.init(data.tile.id, data.tile.x, data.tile.y);
           $("#editorModal").modal('show');
         }
       },

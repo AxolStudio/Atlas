@@ -10,31 +10,23 @@ import flixel.util.FlxSpriteUtil;
 
 class TileGroup extends FlxSpriteGroup
 {
-
     public var ScreenW:Int=0;
     public var ScreenH:Int=0;
-
     public var screenStartX:Int=0;
     public var screenStartY:Int=0;
     public var screenEndX:Int=0;
     public var screenEndY:Int=0;
-
     public var minX:Int=0;
     public var minY:Int=0;
     public var maxX:Int=0;
     public var maxY:Int=0;
-
     public var tiles:Map<String, MapTile>;
     public var keys:Map<String,MapKey>;
-
     public var data:Array<Array<Int>>;
-
     public var groupTiles:FlxTypedSpriteGroup<MapTile>;
     public var groupKeysH:FlxTypedSpriteGroup<MapKey>;
     public var groupKeysV:FlxTypedSpriteGroup<MapKey>;
-
     public var corners:Array<FlxSprite>;
-
 
     public function new()
     {

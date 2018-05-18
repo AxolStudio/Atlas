@@ -7,16 +7,9 @@ import StringTools;
 
 class Connection
 {
-
     public static var cached_mapdata:String = "";
-
-    public static inline var BASE_URL:String = "http://atlas.axolstudio.com/scripts/";
-    public static inline var TILE_URL:String = "http://atlas.axolstudio.com/tiles/";
-
+    public static inline var BASE_URL:String = "https://atlas.axolstudio.com/scripts/";
     public static var getMapDataCallback:Array<Array<Int>>->Dynamic->Void;
-
-
-
     static public function getMapData(Callback:Array<Array<Int>>->Dynamic->Void):Void
     {
         var h:Http = new Http(BASE_URL + "getMapData.php");
